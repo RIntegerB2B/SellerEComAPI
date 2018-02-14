@@ -84,7 +84,7 @@ exports.createContent = function(req, res) {
         if (err) throw err;
         
         var sqlQuery = "CALL productContentInsert1(?,?,?)";
-        var formattedCreateContentQuery = prepareQuery(sqlQuery,[req.body.ClientId, currentDateTime, "Content Description"]);
+        var formattedCreateContentQuery = prepareQuery(sqlQuery,[req.body.clientId, currentDateTime, "Content Description"]);
         mySqlDbConfig.mySqlCon.query(formattedCreateContentQuery, function (err, result) {
             if (err) throw err;
             res.send(result[0][0]);

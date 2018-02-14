@@ -13,7 +13,7 @@ contentUploadRoutes(app); //register the route
 //contentViewRoutes(app);
 app.listen(port);
 
-/*
+
 var mongoDbConfig = require('../api/config/mongoDatabase.config');
 var mongoose = require('mongoose');
 
@@ -32,7 +32,7 @@ app.get('/listUsers', function (req, res) {
   res.end( "Asd" );
 })
 
-*/
+
 
 contentUploadRoutes(app);
 contentViewRoutes(app);

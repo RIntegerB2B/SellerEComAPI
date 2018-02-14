@@ -2,8 +2,9 @@
 var mongoose = require('mongoose');
 
 const ContentDetailSchema = new mongoose.Schema({
-    UserId: { type: Number, default: 0 },
-    FirstName: String
+  contentDetailId: { type: Number, default: 0 },
+  contentData: String,
+  description:String
   });
 
   const ContentDetail = mongoose.model('ContentDetail', ContentDetailSchema);

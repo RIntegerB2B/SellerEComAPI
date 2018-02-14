@@ -34,6 +34,16 @@ exports.getAllContent = function(req, res) {
   });
 };
 
+exports.getContents = function(req, res) {
+  // Retrieve and return all notes from the database.
+  var query = Content.SomeValue.find({}).select({ "name": 1, "_id": 0});
+
+    query.exec(function (err, someValue) {
+        if (err) return next(err);
+        res.send(someValue);
+    });
+};
+
 exports.createContent = function(req, res) {
     // Retrieve and return all notes from the database.
    /* var content = new Content({publishId: 1 , contentData: "Sample"});
