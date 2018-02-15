@@ -1,27 +1,68 @@
 'use strict';
-/*var MongoClient = require('mongodb').MongoClient
-  , assert = require('assert');
-var url = 'mongodb://localhost:27017';
-
-exports.getContents = function(res){
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    console.log("Connected correctly to server");
-    var dbase = db.db("sellerECom"); //here
-    var col = dbase.collection('find');
-    // Insert a single document
-      // Get first two documents that match the query
-      col.find({a:1}).limit(2).toArray(function(err, docs) {
-        assert.equal(null, err);
-        assert.equal(2, docs.length);
-        res.end(docs);
-        db.close();
-      });
-    });
-}
-*/
-
 var Content = require('../models/content');
+
+exports.createContent = function(req, res) {
+  var newContent = new Content(req.body);
+
+  newContent.save(function(err, contentData) {
+    if (err)
+      res.send(err);
+    res.send(contentData);
+  });
+};
+
+exports.getContents = function(req, res) {
+ /* Content.find({'clientId': '1'},'createdDate publishId',function(err, contents){
+    if(err) {
+        res.status(500).send({message: "Some error occurred while retrieving notes."});
+    } else {
+        res.send(contents);
+    }
+  }); */
+
+  /*Content.aggregate()
+  .group({ _id: '$publishId' })
+  .select('createdDate publishId')
+  .exec(function (err, contents) {
+    if(err) {
+      res.status(500).send({message: "Some error occurred while retrieving notes."});
+    } else {
+      res.send(contents);
+    }
+  }); */
+
+  /*Content.aggregate( [ { $group : { _id : "$createdDate" } } ] ).exec(function (err, contents) {
+    if(err) {
+      res.status(500).send({message: "Some error occurred while retrieving notes."});
+    } else {
+      res.send(contents);
+    }
+  }); */
+
+  Content.aggregate( [ { $group : { _id :{  "createdDate": "$createdDate",  "publishId": "$publishId" , "encryptedKey" : "$encryptedKey"} } }
+  ,
+  // Sorting pipeline
+  { "$sort": { "publishId": -1 } }
+] ).exec(function (err, contents) {
+    if(err) {
+      res.status(500).send({message: "Some error occurred while retrieving notes."});
+    } else {
+      res.send(contents);
+    }
+  });
+
+};
+
+exports.getContentDetail = function(req, res) {
+  // Retrieve and return all notes from the database.
+  Content.find({'publishId': req.params.publishId},'contentDetailId contentData',function(err, contentDetail){
+    if(err) {
+        res.status(500).send({message: "Some error occurred while retrieving notes."});
+    } else {
+        res.send(contentDetail);
+    }
+  });
+};
 
 exports.getAllContent = function(req, res) {
   // Retrieve and return all notes from the database.
@@ -34,33 +75,30 @@ exports.getAllContent = function(req, res) {
   });
 };
 
-exports.getContents = function(req, res) {
-  // Retrieve and return all notes from the database.
-  var query = Content.SomeValue.find({}).select({ "name": 1, "_id": 0});
 
-    query.exec(function (err, someValue) {
-        if (err) return next(err);
-        res.send(someValue);
-    });
+exports.getNewPublishId = function(req, res, callBack) {
+  // Retrieve and return all notes from the database.
+ 
+
+  Content.
+  find({'clientId': '1' }).
+  sort({ publishId: -1 }).
+  select({ publishId: 1 }).
+  limit(0).
+  exec(function(err, events){
+    if(events.length > 0){
+      console.log(events[0].publishId);
+      res.send({publishId: events[0].publishId + 1});
+    }
+    else{
+      console.log(1);
+      res.send({publishId: 1});
+    }
+    
+});
 };
 
-exports.createContent = function(req, res) {
-    // Retrieve and return all notes from the database.
-   /* var content = new Content({publishId: 1 , contentData: "Sample"});
-    content.save(function(err, data) {
-        console.log(data);
-        if(err) {
-            console.log(err);
-            res.status(500).send({message: "Some error occurred while creating the Note."});
-        } else {
-           // res.send(data);
-        }
-    }); */
 
-    var newContent = new Content(req.body);
-    newContent.save(function(err, contentData) {
-      if (err)
-        res.send(err);
-      res.send(contentData);
-    });
-  };
+
+
+

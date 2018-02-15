@@ -1,15 +1,40 @@
 'use strict';
 
 var mongoModal = require('../models/contentUploadModel');
-var msModal =require('../models/contentUploadMSModel')
+var msModal =require('../models/contentUploadMSModel');
+var rand = require("random-key");
+
+exports.createContent = function(req, res) {
+  req.body.encryptedKey = rand.generate();
+  console.log(req.body);
+//msModal.createContent(req,res);
+mongoModal.createContent(req,res);
+};
+
 exports.getContents = function(req, res) {
   /* content.find({}, function(err, content) {
     if (err)
       res.send(err);
     res.json(content);
   }); */
- // mongoModal.getAllContent(req, res);
- msModal.getAllContent(req, res);
+  mongoModal.getContents(req, res);
+ //msModal.getAllContent(req, res);
+};
+
+exports.getNewPublishId = function(req, res) {
+  mongoModal.getNewPublishId(req, res, callBack);
+};
+
+
+
+exports.getContentDetail = function(req, res) {
+  /* content.find({}, function(err, content) {
+    if (err)
+      res.send(err);
+    res.json(content);
+  }); */
+  mongoModal.getContentDetail(req, res);
+ //msModal.getContentDetail(req, res);
 };
 
 exports.createContentDetail = function(req, res) {
@@ -23,27 +48,14 @@ exports.createContentDetail = function(req, res) {
  msModal.createContentDetail(req, res);
 };
 
-exports.getContentDetail = function(req, res) {
-  /* content.find({}, function(err, content) {
-    if (err)
-      res.send(err);
-    res.json(content);
-  }); */
- // mongoModal.getAllContent(req, res);
- msModal.getContentDetail(req, res);
-};
+var callBack = function(err, res){
+  if(err) {
+      res.status(500).send({message: "Some error occurred while retrieving notes."});
+  } else {
+      res.send(res.body);
+  }
+}
 
-
-
-exports.createContent = function(req, res) {
-  console.log(req.body);
- msModal.createContent(req,res);
-};
-
-exports.getContentPublishId = function(req, res) {
-  let clientId = req.params.clientId;
- // msModal.getNewPublishId(clientId, res);
-};
 /*
 
 exports.read_a_content = function(req, res) {
