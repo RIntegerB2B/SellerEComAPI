@@ -12,42 +12,17 @@ exports.createContent = function(req, res) {
 };
 
 exports.getContents = function(req, res) {
- /* Content.find({'clientId': '1'},'createdDate publishId',function(err, contents){
-    if(err) {
-        res.status(500).send({message: "Some error occurred while retrieving notes."});
-    } else {
-        res.send(contents);
-    }
-  }); */
-
-  /*Content.aggregate()
-  .group({ _id: '$publishId' })
-  .select('createdDate publishId')
-  .exec(function (err, contents) {
-    if(err) {
-      res.status(500).send({message: "Some error occurred while retrieving notes."});
-    } else {
-      res.send(contents);
-    }
-  }); */
-
-  /*Content.aggregate( [ { $group : { _id : "$createdDate" } } ] ).exec(function (err, contents) {
-    if(err) {
-      res.status(500).send({message: "Some error occurred while retrieving notes."});
-    } else {
-      res.send(contents);
-    }
-  }); */
-
   Content.aggregate( [ { $group : { _id :{  "createdDate": "$createdDate",  "publishId": "$publishId" , "encryptedKey" : "$encryptedKey"} } }
   ,
-  // Sorting pipeline
   { "$sort": { "publishId": -1 } }
-] ).exec(function (err, contents) {
+    ]).exec(function (err, contents) {
     if(err) {
       res.status(500).send({message: "Some error occurred while retrieving notes."});
     } else {
-      res.send(contents);
+    contents.sort(function(a, b){
+        return a.publishId - b.publishId;
+    });
+    res.send(contents);
     }
   });
 
@@ -63,6 +38,19 @@ exports.getContentDetail = function(req, res) {
     }
   });
 };
+
+exports.getContentDetailForSeller = function(req, res) {
+  // Retrieve and return all notes from the database.
+  Content.find({'encryptedKey': req.params.encryptedKeyValue},'contentDetailId contentData',function(err, contentDetail){
+    if(err) {
+        res.status(500).send({message: "Some error occurred while retrieving notes."});
+    } else {
+        res.send(contentDetail);
+    }
+  });
+};
+
+
 
 exports.getAllContent = function(req, res) {
   // Retrieve and return all notes from the database.

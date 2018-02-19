@@ -24,4 +24,7 @@ module.exports = function(app) {
 
     app.route('/contents/contentDetail/:publishId')
     .get(contentUpload.getContentDetail)
+
+    app.route('/contents/contentDetail/buyer/:encryptedKeyValue')
+    .get(contentUpload.getContentDetailForSeller)
 };

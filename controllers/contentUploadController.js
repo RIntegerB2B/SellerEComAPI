@@ -37,6 +37,12 @@ exports.getContentDetail = function(req, res) {
  //msModal.getContentDetail(req, res);
 };
 
+exports.getContentDetailForSeller = function(req, res) {
+  mongoModal.getContentDetailForSeller(req, res);
+};
+
+
+
 exports.createContentDetail = function(req, res) {
   console.log("Inside");
   /* content.find({}, function(err, content) {
